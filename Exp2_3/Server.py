@@ -65,7 +65,7 @@ class SMTPServer:
                 body.append(line)
 
         # Send the email to QQ email
-        self.send_email("smtp.qq.com", 465, "你的邮箱信息", "你的授权码", to_addr, subject, "\n".join(body))
+        self.send_email("smtp.qq.com", 465, "你的邮箱", "你的授权码", to_addr, subject, "\n".join(body))
 
     def send_email(self, smtp_host, smtp_port, sender, password, recipient, subject, body):
         message = MIMEMultipart()

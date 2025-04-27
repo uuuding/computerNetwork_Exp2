@@ -86,8 +86,6 @@ class SMTPServer:
         # Send the email to QQ email
         self.send_email("smtp.qq.com", 465, "你的邮箱", "你的授权码", to_addr, subject, "\n".join(body))
 
-        self.send_email('smtp.qq.com', 465, '1718973225@qq.com', 'ousrgihwzysebacf', to_addr, subject,
-                        new_msg.as_string())
 
     def send_email(self, smtp_host, smtp_port, sender, password, recipient, subject, message):
         try:

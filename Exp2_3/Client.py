@@ -1,4 +1,8 @@
 from socket import *
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.image import MIMEImage
 
 # 邮件服务器地址和端口
 mailServer = '127.0.0.1'
@@ -8,15 +12,21 @@ mailPort = 8032
 rcpt = '3296416743@qq.com'
 
 # 构造邮件内容
-msg = "\r\n".join([
-    "From: sender@example.com",
-    "To: " + rcpt,
-    "Subject: Python SMTP 测试邮件",
-    "",
-    "这是一封通过自建 SMTP 中继服务器发送的测试邮件。",
-    "",
-    "."
-]) + "\r\n.\r\n"
+msg = MIMEMultipart()
+msg['From'] = 'sender@example.com'
+msg['To'] = rcpt
+msg['Subject'] = 'Python SMTP 测试邮件'
+
+# 添加邮件正文
+body = "这是一封通过自建 SMTP 中继服务器发送的测试邮件，包含图片附件。"
+msg.attach(MIMEText(body, 'plain'))
+
+# 添加图片附件
+with open('test.jpg', 'rb') as f:
+    img_data = f.read()
+img = MIMEImage(img_data)
+img.add_header('Content-Disposition', 'attachment', filename='test.jpg')
+msg.attach(img)
 
 # 创建 TCP 套接字并连接到邮件服务器
 clientSocket = socket(AF_INET, SOCK_STREAM)
@@ -71,7 +81,8 @@ if recv4[:3] != '354':
     exit()
 
 # 发送邮件内容
-clientSocket.send(msg.encode())
+email_content = msg.as_string() + "\r\n.\r\n"
+clientSocket.send(email_content.encode())
 recv5 = clientSocket.recv(1024).decode()
 print("邮件发送响应:", recv5)
 if recv5[:3] != '250':
